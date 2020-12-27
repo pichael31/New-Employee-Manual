@@ -159,17 +159,20 @@ public class PlayerController : MonoBehaviour
         {
             FallAsleep();
         }
-        if (gameState == GameManager.GameState.WorkFinished && transform.position.x < 0)
+        else if (gameState == GameManager.GameState.WorkFinished && transform.position.x < 0)
         {
             if (gameState != GameManager.GameState.GameAlmostOver)
             {
                 gameManager.SetState(GameManager.GameState.GameAlmostOver);
                 faceCanvas.SetListTalkingText(new List<string> { "This is your life now.", "See you tomorrow " + playerID.ToString() + "." }, GameManager.GameState.GameOver);
-                Application.Quit();
             }
         }
+        else if (gameState == GameManager.GameState.GameOver)
+        {
+            Application.Quit();
+        }
 
-        if (!isSitting && (!faceCanvas.isListening || gameState == GameManager.GameState.GameAlmostOver))
+        else if (!isSitting && (!faceCanvas.isListening || gameState == GameManager.GameState.GameAlmostOver))
         {
             MovePlayer();
         }
@@ -196,6 +199,11 @@ public class PlayerController : MonoBehaviour
         if (transform.position.y > 1.8)
         {
             transform.position = new Vector3(transform.position.x, 1.8f, transform.position.z);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            gameManager.SetState(GameManager.GameState.Lunch);
         }
     }
 

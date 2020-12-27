@@ -13,7 +13,7 @@ public class Coworker : MonoBehaviour
     public bool isSittingAtDesk = false;
     public bool isWorking = false;
 
-    public List<string> possibleInteractions = new List<string>
+    private List<string> possibleInteractions = new List<string>
     {
         "That's some weather out there, huh!",
         "That's some weather out there, huh!",
