@@ -16,21 +16,44 @@ public class Coworker : MonoBehaviour
     public List<string> possibleInteractions = new List<string>
     {
         "That's some weather out there, huh!",
+        "That's some weather out there, huh!",
+        "That's some weather out there, huh!",
+        "I can't believe what time it is already!",
+        "I can't believe what time it is already!",
+        "I can't believe what time it is already!",
         "I can't believe what time it is already!",
         "Big game last night!",
+        "Big game last night!",
+        "So much work to do today!",
+        "So much work to do today!",
         "So much work to do today!",
         "My wife cheated on me and I'm dead inside!",
         "Glad to have you on board",
+        "Glad to have you on board",
+        "We should grab a beer after work",
         "We should grab a beer after work",
         "This work isn't that bad",
         "Don't worry, you'll get used to it",
         "I hate this job so much, but I can't quit",
         "I'll probably stay late today, just like normal",
+        "I'll probably stay late today, just like normal",
+        "I'll probably stay late today, just like normal",
+        "I'll probably stay late today, just like normal",
         "Wow!  Look at the time!",
         "Sorry, I'm a little busy right now",
+        "Sorry, I'm a little busy right now",
+        "Can't talk, going for a new record today!",
         "Can't talk, going for a new record today!",
         "This work really helps the day go by",
-        "You're luck to join a team that has a much fun as us!"
+        "This work really helps the day go by",
+        "You're luck to join a team that has a much fun as us!",
+        "You're luck to join a team that has a much fun as us!",
+        "You really learn to love this job",
+        "You really learn to love this job",
+        "You really learn to love this job",
+        "Who needs work-life balance when work is your life!",
+        "Who needs work-life balance when work is your life!",
+        "Who needs work-life balance when work is your life!",
     };
 
     private void Awake()
@@ -86,6 +109,7 @@ public class Coworker : MonoBehaviour
 
     public void SitDown(Transform chair)
     {
+        transform.rotation = new Quaternion(0, 0, 0, 0);
         transform.position = new Vector3(chair.position.x + 0.4f, 2.1f, chair.position.z);
         transform.Rotate(new Vector3(0, 180, 0));
         chair.GetComponent<Interactable>().isBeingUsed = true;

@@ -1,33 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Monitor : MonoBehaviour
 {
-    public List<Material> workMaterialList;
-    private MeshRenderer meshRenderer;
+    public List<Sprite> workImageList;
+    private Image monitorImage;
 
-    //private void Start()
-    //{
-    //    meshRenderer = GetComponent<MeshRenderer>();
-    //    IEnumerator cr = parseMaterialstoScreen();
-    //    StartCoroutine(cr);
-    //}
+    private void Start()
+    {
+        monitorImage = GetComponentInChildren<Image>();
+        IEnumerator cr = parseImagestoScreen();
+        StartCoroutine(cr);
+    }
 
-    //IEnumerator parseMaterialstoScreen()
-    //{
-    //    while (true)
-    //    {
-    //        yield return new WaitForSeconds(Random.Range(0, 150) / 100);
-    //        foreach (Material workMaterial in workMaterialList)
-    //        {
-    //            Material[] newMaterials = new Material[meshRenderer.materials.Length];
-    //            newMaterials[0] = workMaterial;
-    //            newMaterials[1] = meshRenderer.materials[1];
-    //            newMaterials[2] = meshRenderer.materials[2];
-    //            meshRenderer.materials = newMaterials;
-    //            yield return new WaitForSeconds(0.5f);
-    //        }
-    //    }
-    //}
+    IEnumerator parseImagestoScreen()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(0, 150) / 100);
+            foreach (Sprite workImage in workImageList)
+            {
+                monitorImage.sprite = workImage;
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
+    }
 }

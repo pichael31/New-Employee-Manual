@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
         ActualMeeting,
         MeetingFinished,
         WorkFinished,
+        GameAlmostOver,
         GameOver,
     }
 
@@ -107,6 +108,44 @@ public class GameManager : MonoBehaviour
             {
                 coworkers[i].MoveToMeetingRoom(chair);
             }
+        }
+    }
+
+    IEnumerator FallAsleepThenWakeUp()
+    {
+        yield return new WaitForSeconds(16 * 3);
+        float startSpeed = 0;
+        while (player.faceCanvas.canvasColor.color.a < 1)
+        {
+            player.FallAsleep(startSpeed);
+            startSpeed += 0.5f;
+        }
+        player.faceCanvas.StopAllCoroutines();
+        player.faceCanvas.thingsToHear = new List<string>();
+        player.faceCanvas.ResetTalkingText();
+        for (int i = 0; i < coworkers.Count; i++)
+        {
+            GameObject desk = coworkerDesks[i];
+            foreach (Transform deskPart in desk.transform)
+            {
+                if (deskPart.tag == "Chair")
+                {
+                    coworkers[i].SitDown(deskPart);
+                    coworkers[i].StartCoroutine("BashFace");
+                }
+            }
+        }
+        boss.transform.position = new Vector3(31, 1.8f, 38);
+        boss.transform.localScale.Set(1.2f, 1.8f, 1.2f);
+        yield return new WaitForSeconds(0.5f);
+        SetState(GameState.MeetingFinished);
+        Vector3 rotateTo = new Vector3(0, player.transform.rotation.eulerAngles.y, 0);
+        player.transform.rotation = Quaternion.Lerp(player.transform.rotation, Quaternion.Euler(rotateTo), 1);
+        float transparency = player.faceCanvas.canvasColor.color.a;
+        while (transparency > 0)
+        {
+            transparency -= 0.5f;
+            player.faceCanvas.canvasColor.color = new Color(0, 0, 0, transparency);
         }
     }
 }

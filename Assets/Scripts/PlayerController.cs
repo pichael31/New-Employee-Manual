@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
         intereractDictionary.Add("Front Desk Person", BeIntroduced);
         intereractDictionary.Add("Boss", TalkToBoss);
         intereractDictionary.Add("Fridge", EatLunch);
+        intereractDictionary.Add("Toilet", Poop);
     }
 
     public string interactableText()
@@ -66,6 +67,11 @@ public class PlayerController : MonoBehaviour
                     return "Sit Down";
                 }
             }
+        }
+
+        if (interactType == "Toilet")
+        {
+            return "Take a break";
         }
 
         if (interactType == "Keyboard" || interactType == "Monitor")
@@ -149,17 +155,21 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            gameManager.MoveCoworkersToMeeetingRoom();
-            gameManager.SetState(GameManager.GameState.MeetingStarts);
-        }
         if (gameState == GameManager.GameState.MeetingStarts && isSitting)
         {
             FallAsleep();
         }
+        if (gameState == GameManager.GameState.WorkFinished && transform.position.x < 0)
+        {
+            if (gameState != GameManager.GameState.GameAlmostOver)
+            {
+                gameManager.SetState(GameManager.GameState.GameAlmostOver);
+                faceCanvas.SetListTalkingText(new List<string> { "This is your life now.", "See you tomorrow " + playerID.ToString() + "." }, GameManager.GameState.GameOver);
+                Application.Quit();
+            }
+        }
 
-        if (!isSitting && !faceCanvas.isListening)
+        if (!isSitting && (!faceCanvas.isListening || gameState == GameManager.GameState.GameAlmostOver))
         {
             MovePlayer();
         }
@@ -229,6 +239,18 @@ public class PlayerController : MonoBehaviour
     {
         isSitting = true;
         transform.position = new Vector3(focus.transform.position.x, 0.9f, focus.transform.position.z);
+        if (gameState == GameManager.GameState.MeetingStarts)
+        {
+            faceCanvas.SetListTalkingText(gameManager.boss.MeetingSpeech(playerID), GameManager.GameState.MeetingFinished, true);
+            gameManager.StartCoroutine("FallAsleepThenWakeUp");
+        }
+    }
+
+    void Poop()
+    {
+        isSitting = true;
+        transform.position = new Vector3(focus.transform.position.x + 1, 0.9f, focus.transform.position.z);
+        transform.Rotate(new Vector3(0, 1, 0), 180);
     }
 
     void StandUp()
@@ -361,7 +383,11 @@ public class PlayerController : MonoBehaviour
         {
             gameManager.SetState(GameManager.GameState.Lunch);
         }
-        if (gameState == GameManager.GameState.BossShowingHowToWork)
+        else if (countWorkDone >= 24 && gameState == GameManager.GameState.MeetingFinished)
+        {
+            gameManager.SetState(GameManager.GameState.WorkFinished);
+        }
+        else if (gameState == GameManager.GameState.BossShowingHowToWork)
         {
             listenToBossShowWork();
         }
@@ -385,11 +411,11 @@ public class PlayerController : MonoBehaviour
         gameState = state;
     }
 
-    private void FallAsleep()
+    public void FallAsleep(float speed = 4f)
     {
         float transparency = faceCanvas.canvasColor.color.a;
-        faceCanvas.canvasColor.color = new Color(0, 0, 0, transparency + 0.03f * Time.deltaTime);
-        transform.Rotate(new Vector3(1, 0, 0), 3f * Time.deltaTime);
+        faceCanvas.canvasColor.color = new Color(0, 0, 0, transparency + (speed / 100) * Time.deltaTime);
+        transform.Rotate(new Vector3(1, 0, 0), speed * Time.deltaTime);
     }
 
     private void WakeBackUp()

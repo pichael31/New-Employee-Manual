@@ -37,7 +37,7 @@ public class Boss : MonoBehaviour
         "Ball Pit",
         "Bull pit",
         "Dog Pound",
-        "Lions Den",
+        "Lion's Den",
         "Factory Floor",
         "Sweat Shop",
         "Bicep House",
@@ -98,9 +98,9 @@ public class Boss : MonoBehaviour
             StartCoroutine(cr);
             CrackOfficeDoor();
         }
-        if (state == GameManager.GameState.MeetingStarts)
+        if (state == GameManager.GameState.MeetingFinished)
         {
-
+            CloseDoorsAfterMeeting();
         }
     }
 
@@ -116,12 +116,53 @@ public class Boss : MonoBehaviour
 
     public List<string> ShowHowToWork()
     {
-        return new List<string> {"As you know, you'll be entering data using cranial inputation", "Try for yourself by sitting down", "Then press E on your workstation"};
+        return new List<string> {"As you know, you'll be entering data using cranial inputation", "Try for yourself by sitting down", "Then press E on your workstation", "Remember, we pride ourselves on accuracy", "So try not to miss any data points"};
     }
 
     public string DontMindMe()
     {
         return "Don't mind me, get back to work!";
+    }
+
+    public List<string> MeetingSpeech(int id)
+    {
+        int bestEmployeeID = 0;
+        int bestEmployeeWork = 0;
+        int randomEmployee = 0;
+        foreach (KeyValuePair<int, int> kvp in employeeWorkDict)
+        {
+            if  (kvp.Value > bestEmployeeWork)
+            {
+                bestEmployeeID = kvp.Key;
+                bestEmployeeWork = kvp.Value;
+            }
+            if (kvp.Value != id && (randomEmployee == 0 || Random.Range(9, 100) > 69))
+            {
+                randomEmployee = kvp.Key;
+            }
+        }
+
+        return new List<string>
+        {
+            "Alright, now that we're all here, lets begin",
+            "I'd like to introduce our new employee " + id.ToString(),
+            "He's already finished " + employeeWorkDict[id] + " work so far!",
+            "I'd also like to mention " + bestEmployeeID.ToString(),
+            "So far today, he's done " + bestEmployeeWork.ToString() + "!",
+            "Let's see who can beat him before the end of the day!",
+            "Now let's get down to business",
+            "We're doing alright, but we can do better",
+            "Our stonks could really be stonking harder",
+            "Remember our company ideals",
+            "Teamwork",
+            "Honesty",
+            "Profit",
+            "For example, " + randomEmployee.ToString() + " has only done " + employeeWorkDict[randomEmployee].ToString(),
+            "We're gonna need to really do better than that",
+            "Especially if we want to accomplish our year end goals",
+            "Remember, we pride ourselves on accuracy",
+            "And our quality customer service",
+        };
     }
 
     public List<string> ExplainFloor()
@@ -148,7 +189,7 @@ public class Boss : MonoBehaviour
     IEnumerator MoveBoss(List<Vector3> positions)
     {
         isMoving = true;
-        float moveSpeed = 10f;
+        float moveSpeed = 5f;
         foreach (Vector3 position in positions)
         {
             isMoving = true;
@@ -178,5 +219,10 @@ public class Boss : MonoBehaviour
     {
         bossOfficeDoor.transform.Rotate(new Vector3(0, 1, 0), 165);
         meetingRoomDoor.transform.Rotate(new Vector3(0, 1, 0), -135);
+    }
+
+    public void CloseDoorsAfterMeeting()
+    {
+        bossOfficeDoor.transform.Rotate(new Vector3(0, 1, 0), -165);
     }
 }
